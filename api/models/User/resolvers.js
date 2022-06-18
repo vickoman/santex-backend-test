@@ -74,7 +74,7 @@ const getUsers = async () => {
  * @param {*} ctx  Grab id from context
  * @returns  UserObject
  */
-const getUser = async (_, {}, ctx) => {
+const getMe = async (_, {}, ctx) => {
     return ctx.user;
 };
 
@@ -82,5 +82,5 @@ module.exports = {
     auth,
     createUser,
     getUsers,
-    getUser
+    getMe
 }
