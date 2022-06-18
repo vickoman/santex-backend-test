@@ -1,6 +1,13 @@
 version: '3.9'
 
 services:
+  api:
+    build: ../api/.
+    ports:
+      - "8689:3000"
+    volumes:
+      - ../api/:/home/app
+    container_name: ${API_CN_NAME}
   mongodb:
     image: mongo:${MONGO_VERSION}
     ports:
