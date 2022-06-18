@@ -5,15 +5,22 @@ const {
     getMe
 } = require('../models/User/resolvers');
 
+const {
+    importLeague,
+    getAllLeague
+} = require('../models/League/resolvers');
+
 // Resolvers
 const resolvers = {
     Query: {
         getUsers,
-        getMe
+        getMe,
+        getAllLeague
     },
     Mutation: {
         auth,
         createUser,
+        importLeague
     }
 };
 

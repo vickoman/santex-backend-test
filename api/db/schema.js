@@ -25,9 +25,25 @@ const typeDefs = gql`
         created_at: String
     }
 
+    type League {
+        id: ID
+        name: String
+        code: String
+        areaName: String
+    }
+
+    input LeagueInput {
+        name: String!
+        code: String!
+        areaName: String!
+    }
+
     type Query {
         getUsers: [User]
         getMe: User
+
+        # Leagues
+        getAllLeague: [League]
     }
     # Mutations
     type Mutation {
@@ -36,6 +52,9 @@ const typeDefs = gql`
 
         #Auth
         auth(input: AuthInput!) : Token
+
+        # Leagues
+        importLeague(leagueCode: String!) : League
     }
 `;
 
