@@ -59,6 +59,10 @@ clean: ## Removes containers, images and volumes [file]
 start: ## Starts previously-built containers (see 'build') [file|service|services]
 	@$(DOCKER_COMPOSE) -f "$(file)" start $(c)
 
+rm: ## Starts previously-built containers (see 'build') [file|service|services]
+	@$(DOCKER_COMPOSE) -f "$(file)" stop $(c)
+	@$(DOCKER_COMPOSE) -f "$(file)" rm -f $(c)
+
 status: ps ## see 'ps'
 ps:        ## Shows status of containers [file|service|services]
 	@$(DOCKER_COMPOSE) -f "$(file)" ps
@@ -73,5 +77,9 @@ restart: stop start ## Stops containers (via 'stop'), and starts them again (via
 
 sh: ##
 	@$(DOCKER_COMPOSE) -f "$(file)" exec $(c) bash
+
+api-deps: ##
+	cd ./api && npm i;
+
 
 
