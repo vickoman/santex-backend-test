@@ -2,14 +2,14 @@ const {
     auth,
     createUser,
     getUsers,
-    getUser
+    getMe
 } = require('../models/User/resolvers');
 
 // Resolvers
 const resolvers = {
     Query: {
         getUsers,
-        getUser
+        getMe
     },
     Mutation: {
         auth,
