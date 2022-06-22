@@ -30,6 +30,16 @@ const typeDefs = gql`
         name: String
         code: String
         areaName: String
+        teams: [Team]
+    }
+
+    type Team {
+        name: String!
+        tla: String!
+        shortName: String!
+        areaName: String!
+        email: String
+        leagues: [League]
     }
 
     input LeagueInput {
@@ -44,6 +54,9 @@ const typeDefs = gql`
 
         # Leagues
         getAllLeague: [League]
+
+        # Teams
+        getAllTeams: [Team]
     }
     # Mutations
     type Mutation {
