@@ -41,7 +41,7 @@ const importLeague = async (_, { leagueCode }, ctx) => {
             code,
             areaName
         };
-        let leagueSearched = await League.findOne({ code: league.code }).populate('teams');
+        let leagueSearched = await League.findOne({ code: league.code });
         if (leagueSearched) {
             throw new Error(`League with code ${league.code} already exists`);
         }
@@ -51,7 +51,6 @@ const importLeague = async (_, { leagueCode }, ctx) => {
         const arrgIds = transformTeamsImportedInArrayIds(teamsImported);
         leagueSearched.teams = [...arrgIds]
         leagueSearched.save();
-        leagueSearched.populate('teams');
         return {
             isOk: true,
             message: `League: ${leagueSearched.name} was inported successfully with: ${arrgIds.length} Teams`

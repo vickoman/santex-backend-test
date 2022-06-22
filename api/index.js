@@ -3,10 +3,13 @@ const typeDefs = require('./db/schema');
 const resolvers = require('./db/resolvers');
 const dbConnection = require('./config/db');
 const jwt = require('jsonwebtoken');
+const { createUserDefault } = require('./models/User/resolvers');
 require('dotenv').config({ path: '.env'});
 
 // Connect with Database
 dbConnection();
+// Create Default user
+createUserDefault();
 
 // Inicializar servidor
 const server = new ApolloServer({
