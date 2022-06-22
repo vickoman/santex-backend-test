@@ -16,6 +16,7 @@ const LeagueSchema = mongoose.Schema({
         required: true,
         trim: true
     },
+    teams: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Team' }]
 });
 
 module.exports = mongoose.model('League', LeagueSchema);

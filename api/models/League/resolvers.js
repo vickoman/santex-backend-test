@@ -1,6 +1,7 @@
 const League = require('./League');
 const axios = require('axios');
 const { LEAGUE_RESOURCE }  = require('../../config/constants');
+const { importTeams } = require('../Team/resolvers');
 
 /**
  *  axiosGet get generic data from Get Endpoints
@@ -27,6 +28,7 @@ const axiosGet = async (urlComplement) => {
  * @returns 
  */
 const importLeague = async (_, { leagueCode }, ctx) => {
+    if(!ctx.user) throw new Error('You must be logged in');
     const getData = await axiosGet(`${LEAGUE_RESOURCE}/${leagueCode}`);
     const {name, code, area: { name: areaName}} = getData;
     const league = {
@@ -34,18 +36,21 @@ const importLeague = async (_, { leagueCode }, ctx) => {
         code,
         areaName
     };
-    const leagueExists = await League.findOne({ code: league.code });
-    if (leagueExists) {
-        throw new Error(`League with code ${league.code} already exists`);
+    let leagueSearched = await League.findOne({ code: league.code });
+    if (!leagueSearched) {
+        //throw new Error(`League with code ${league.code} already exists`);
+        leagueSearched = new League(league);
+        await leagueSearched.save();
     }
-    const newLeague = new League(league);
-    await newLeague.save();
-    return newLeague;
+    await importTeams(leagueSearched.code, leagueSearched.id, ctx);
+
+    const leagueUpdated = await League.findOne({ code: league.code }).populate('teams');
+    return leagueUpdated;
 }
 
 const getAllLeague = async (_, {}, ctx) => {
     if(!ctx.user) throw new Error('You must be logged in');
-    const leagues = await League.find();
+    const leagues = await League.find().populate('teams');
     return leagues;
 }
 
