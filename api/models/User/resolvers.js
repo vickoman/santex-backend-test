@@ -71,10 +71,7 @@ const createUserDefault = async () => {
     // check if user exists
     const { email, password } = input;
     const user = await User.findOne({ email });
-    if (user) {
-        console.log(`User default: ${input.email} already exists`);
-        return;
-    }
+    if (user) return;
 
     // Create hash for password
     const salt =  await bcrypt.genSalt(10);

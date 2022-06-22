@@ -6,6 +6,11 @@ const TeamSchema = mongoose.Schema({
         required: true,
         trim: true
     },
+    code: {
+        type: String,
+        required: true,
+        trim: true
+    },
     tla: {
         type: String,
         required: true,

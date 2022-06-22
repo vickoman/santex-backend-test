@@ -11,9 +11,10 @@ const extractTeams = async (leagueCode, leagueId) => {
         const getData = await axiosGet(`${LEAGUE_RESOURCE}/${leagueCode}/teams`);
         let teams = [];
         getData.teams.forEach(t => {
-            const {name, tla, shortName, area: { name: areaName}, email } = t;
+            const {name, tla, id, shortName, area: { name: areaName}, email } = t;
             teams.push({
                 name,
+                code: id,
                 tla,
                 shortName,
                 areaName,
@@ -50,7 +51,6 @@ const importTeams = async (leagueCode, leagueId, ctx) => {
         if(!ctx.user) throw new Error('You must be logged in');
         const teams = await extractTeams(leagueCode, leagueId);
         const teamsToSave  = await getItemsToSave(teams);
-        let teamsSaved = [];
         console.log(`Teams to save: ${teamsToSave.length}`);
         if(!teamsToSave.length > 0) {
             throw new Error('There no teams to save in the league');
