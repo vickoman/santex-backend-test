@@ -21,6 +21,10 @@ const axiosGet = async (urlComplement) => {
 
 };
 
+const transformTeamsImportedInArrayIds = (teams) => {
+    const arragIds = teams.map(t => t.id);
+    return arragIds;
+}
 /**
  *  importLeague import a league from football api
  * @param {*} leeagueCode 
@@ -29,23 +33,32 @@ const axiosGet = async (urlComplement) => {
  */
 const importLeague = async (_, { leagueCode }, ctx) => {
     if(!ctx.user) throw new Error('You must be logged in');
-    const getData = await axiosGet(`${LEAGUE_RESOURCE}/${leagueCode}`);
-    const {name, code, area: { name: areaName}} = getData;
-    const league = {
-        name,
-        code,
-        areaName
-    };
-    let leagueSearched = await League.findOne({ code: league.code });
-    if (!leagueSearched) {
-        //throw new Error(`League with code ${league.code} already exists`);
+    try {
+        const getData = await axiosGet(`${LEAGUE_RESOURCE}/${leagueCode}`);
+        const {name, code, area: { name: areaName}} = getData;
+        const league = {
+            name,
+            code,
+            areaName
+        };
+        let leagueSearched = await League.findOne({ code: league.code }).populate('teams');
+        if (leagueSearched) {
+            throw new Error(`League with code ${league.code} already exists`);
+        }
         leagueSearched = new League(league);
         await leagueSearched.save();
+        const teamsImported = await importTeams(leagueSearched.code, leagueSearched.id, ctx);
+        const arrgIds = transformTeamsImportedInArrayIds(teamsImported);
+        leagueSearched.teams = [...arrgIds]
+        leagueSearched.save();
+        leagueSearched.populate('teams');
+        return {
+            isOk: true,
+            message: `League: ${leagueSearched.name} was inported successfully with: ${arrgIds.length} Teams`
+        };
+    } catch(e) {
+        throw new Error(e.message);
     }
-    await importTeams(leagueSearched.code, leagueSearched.id, ctx);
-
-    const leagueUpdated = await League.findOne({ code: league.code }).populate('teams');
-    return leagueUpdated;
 }
 
 const getAllLeague = async (_, {}, ctx) => {

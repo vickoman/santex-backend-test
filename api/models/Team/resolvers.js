@@ -27,25 +27,17 @@ const extractTeams = async (leagueCode, leagueId) => {
     }
 }
 
-const checkExistingTeams = async (teams, leagueCode) => {
-    const teamsToUpdate = [];
+const getItemsToSave = async (teams) => {
     const teamsToSave = [];
     for await (let t of teams) {
         const exist = await Team.findOne({ name: { $eq: t.name } }).populate('leagues');
         if(exist) { 
-            if(exist.leagues.length > 0) {
-                exist.leagues.forEach(l => {
-                    if(l.code === leagueCode) {
-                        teamsToUpdate.push(t);
-                    }
-                }
-                );
-            }
+            throw new Error(`Team with name: ${t.name} already exists`);
         } else {
             teamsToSave.push(t);
         }
     }
-    return { teamsToUpdate, teamsToSave };
+    return teamsToSave;
 }
 /**
  *  importLeague import a league from football api
@@ -57,22 +49,14 @@ const importTeams = async (leagueCode, leagueId, ctx) => {
     try {
         if(!ctx.user) throw new Error('You must be logged in');
         const teams = await extractTeams(leagueCode, leagueId);
-        const {teamsToUpdate, teamsToSave } = await checkExistingTeams(teams, leagueCode);
+        const teamsToSave  = await getItemsToSave(teams);
+        let teamsSaved = [];
         console.log(`Teams to save: ${teamsToSave.length}`);
-        console.log(`Teams to upate: ${teamsToUpdate.length}`);
-        if(teamsToSave.length > 0) {
-            await Team.insertMany(teams, async (err, docs) => {
-                        if (err) throw new Error(err.message);
-                        const arrgOfIds = docs.map(d => d.id);
-                        await League.findByIdAndUpdate(
-                            leagueId,
-                            { $push: { teams: arrgOfIds}},
-                            { new: true, useFindAndModify: false }
-                        )
-                        return docs;
-                    });
+        if(!teamsToSave.length > 0) {
+            throw new Error('There no teams to save in the league');
         }
-        return true;
+        const insertManyResult = await Team.insertMany(teams);
+        return insertManyResult;
     } catch (err) {
         console.log(err);
         throw new Error(err);

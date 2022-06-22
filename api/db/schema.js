@@ -34,12 +34,18 @@ const typeDefs = gql`
     }
 
     type Team {
+        id: ID!
         name: String!
         tla: String!
         shortName: String!
         areaName: String!
         email: String
         leagues: [League]
+    }
+
+    type ResponseImportLeague {
+        isOk: Boolean!
+        message: String!
     }
 
     input LeagueInput {
@@ -67,7 +73,7 @@ const typeDefs = gql`
         auth(input: AuthInput!) : Token
 
         # Leagues
-        importLeague(leagueCode: String!) : League
+        importLeague(leagueCode: String!) : ResponseImportLeague
     }
 `;
 
