@@ -61,6 +61,33 @@ const createUser = async (_, { input }) => {
     }
 };
 
+// Create default user
+const createUserDefault = async () => {
+    if(!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+        console.log('envs ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME, ADMIN_LASTNAME should be filled in .env file');
+        process.exit(1); // Get out of here 
+    }
+    const input = {email: process.env.ADMIN_EMAIL, name: process.env.ADMIN_NAME, lastName: process.env.ADMIN_LASTNAME, password: process.env.ADMIN_PASSWORD};
+    // check if user exists
+    const { email, password } = input;
+    const user = await User.findOne({ email });
+    if (user) return;
+
+    // Create hash for password
+    const salt =  await bcrypt.genSalt(10);
+    input.password = await bcrypt.hash(password, salt);
+
+    // save user in db
+    try {
+        const user = new User(input);
+        user.save();
+        console.log(`User default: ${input.email} created`);
+        return user;
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 /**
  * Get all users
  * @returns Array of Users
@@ -82,5 +109,6 @@ module.exports = {
     auth,
     createUser,
     getUsers,
-    getMe
+    getMe,
+    createUserDefault
 }
