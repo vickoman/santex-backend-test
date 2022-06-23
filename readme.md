@@ -138,18 +138,18 @@ If we execute mutation `importLeague` We need to setup the headers with **Author
 
 Video Setup from MacOs:
 
-[santex-test-1.mp4](images/santex-test-1.mp4)
+[https://youtu.be/mQ0B-1657w4](https://youtu.be/mQ0B-1657w4)
 
 Mutation `importLeague` in action:
 
-[santex-test-2.mp4](images/santex-test-2.mp4)
+[https://youtu.be/LTx1QGRM3X4](https://youtu.be/LTx1QGRM3X4)
 
 • **team: takes a name and returns the corresponding team. Additionally, if requested in the query, it should resolve the players for that team.**
 
-[santex-test-3.mp4](images/santex-test-3.mp4)
+[https://youtu.be/zl4QghhMzt0](https://youtu.be/zl4QghhMzt0)
 
 **players**: takes **leagueCode** as a parameter and returns the players that belong to all teams participating in the given league. If the given leagueCode is not present in the DB, it should respond with an error message. Add an optional input to the query to filter players also by team name.
 
-[santex-test-5.mp4](images/santex-test-5.mp4)
+[https://youtu.be/Rzg-Uv3EUQA](https://youtu.be/Rzg-Uv3EUQA)
 
 Author: Victor Diaz [ [vickoman.dev@gmail.com](mailto:vickoman.dev@gmail.com) ], Thanks
