@@ -78,7 +78,7 @@ const getAllTeams = async (_, {}, ctx) => {
 const getTeamByName = async (_, { name }, ctx) => {
     if(!ctx.user) throw new Error('You must be logged in');
     try {
-        const team = await Team.findOne({ name}).populate('players');
+        const team = await Team.findOne({ name}).populate('players').populate('leagues');
         if(!team){
             throw new Error(`Does not exist team with name: ${name}`)
         }
