@@ -1,5 +1,6 @@
 const Player = require('./Player');
 const Team = require('../Team/Team');
+const League = require('../League/League');
 const { TEAM_RESOURCE }  = require('../../config/constants');
 const { axiosGet } = require('../../common/axiosHandler');
 const { transformTeamsImportedInArrayIds } = require('../../common/general');
@@ -81,6 +82,8 @@ const getAllPlayers = async (_, {}, ctx) => {
 const getPlayersByLeague = async(_, {leagueCode}, ctx) => {
     if(!ctx.user) throw new Error('You must be logged in');
     try {
+        const leagueExist = await League.findOne({ code: leagueCode});
+        if(!leagueExist) throw new Error(`${leagueCode} is not present in the database`);
         const players = await Player.aggregate([
             {
                 '$lookup': {
