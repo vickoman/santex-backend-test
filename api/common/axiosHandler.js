@@ -7,6 +7,7 @@ const axios = require('axios');
  */
  const axiosGet = async (urlComplement) => {
     try {
+        console.log(`Hit url: ${process.env.FOOTBALL_API_URL}/${urlComplement}`)
         const response = await axios.get(`${process.env.FOOTBALL_API_URL}/${urlComplement}`,
             { headers: { 'X-Auth-Token': process.env.FOOTBALL_TOKEN } 
         });

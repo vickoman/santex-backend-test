@@ -1,7 +1,8 @@
 const Team = require('./Team');
-const League = require('../League/League');
+const RedisQueue = require('../../config/queue');
 const { LEAGUE_RESOURCE }  = require('../../config/constants');
 const { axiosGet } = require('../../common/axiosHandler');
+
 
 /**
  * Extract Teams from API
@@ -46,26 +47,33 @@ const getItemsToSave = async (teams) => {
  * @param {*} ctx 
  * @returns 
  */
-const importTeams = async (leagueCode, leagueId, ctx) => {
+const importTeams = async (leagueCode, leagueId) => {
     try {
-        if(!ctx.user) throw new Error('You must be logged in');
         const teams = await extractTeams(leagueCode, leagueId);
         const teamsToSave  = await getItemsToSave(teams);
         console.log(`Teams to save: ${teamsToSave.length}`);
         if(!teamsToSave.length > 0) {
             throw new Error('There no teams to save in the league');
         }
-        const insertManyResult = await Team.insertMany(teams);
-        return insertManyResult;
+        const insertManyResult = await Team.insertMany(teamsToSave);
+        // const playersInserted = await importPlayers(insertManyResult[0].code, insertManyResult[0].id);
+        addTeamQueue(insertManyResult);
+        return insertManyResult
     } catch (err) {
         console.log(err);
         throw new Error(err);
     }
 }
 
+const addTeamQueue = async (teamsArrg) => {
+    for (let t of teamsArrg){
+        RedisQueue._instance.teamQueue.add( { team: t});
+    }
+}
+
 const getAllTeams = async (_, {}, ctx) => {
     if(!ctx.user) throw new Error('You must be logged in');
-    const Teams = await Team.find({}).populate('leagues');
+    const Teams = await Team.find({}).populate('leagues').populate('players');
     return Teams;
 }
 

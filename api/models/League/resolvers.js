@@ -1,5 +1,6 @@
 const League = require('./League');
 const axios = require('axios');
+const {transformTeamsImportedInArrayIds} = require('../../common/general');
 const { LEAGUE_RESOURCE }  = require('../../config/constants');
 const { importTeams } = require('../Team/resolvers');
 
@@ -21,10 +22,7 @@ const axiosGet = async (urlComplement) => {
 
 };
 
-const transformTeamsImportedInArrayIds = (teams) => {
-    const arragIds = teams.map(t => t.id);
-    return arragIds;
-}
+
 /**
  *  importLeague import a league from football api
  * @param {*} leeagueCode 
@@ -53,7 +51,7 @@ const importLeague = async (_, { leagueCode }, ctx) => {
         leagueSearched.save();
         return {
             isOk: true,
-            message: `League: ${leagueSearched.name} was inported successfully with: ${arrgIds.length} Teams`
+            message: `League: ${leagueSearched.name} was inported successfully with: ${arrgIds.length} Teams. The players will save using queue please be patient, players appears soon.`
         };
     } catch(e) {
         throw new Error(e.message);

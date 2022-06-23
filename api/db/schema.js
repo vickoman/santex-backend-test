@@ -36,11 +36,31 @@ const typeDefs = gql`
     type Team {
         id: ID!
         name: String!
-        tla: String!
-        shortName: String!
-        areaName: String!
+        tla: String
+        shortName: String
+        areaName: String
         email: String
         leagues: [League]
+        players: [SinglePlayer]
+    }
+
+    type SinglePlayer {
+        id: ID!
+        name: String!
+        position: String
+        dateOfBirth: String
+        countryOfBirth: String
+        nationality: String
+    }
+
+    type Player {
+        id: ID!
+        name: String!
+        position: String
+        dateOfBirth: String
+        countryOfBirth: String
+        nationality: String
+        team: Team
     }
 
     type ResponseImportLeague {

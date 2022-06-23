@@ -8,12 +8,12 @@ const TeamSchema = mongoose.Schema({
     },
     code: {
         type: String,
-        required: true,
+        required: false,
         trim: true
     },
     tla: {
         type: String,
-        required: true,
+        required: false,
         trim: true
     },
     shortName: {
@@ -23,7 +23,7 @@ const TeamSchema = mongoose.Schema({
     },
     areaName: {
         type: String,
-        required: true,
+        required: false,
         trim: true
     },
     email: {
@@ -31,7 +31,8 @@ const TeamSchema = mongoose.Schema({
         required: false,
         trim: true
     },
-    leagues: [{ type: mongoose.Schema.Types.ObjectId, ref: 'League' }]
+    leagues: [{ type: mongoose.Schema.Types.ObjectId, ref: 'League' }],
+    players: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Player' }]
 });
 
 module.exports = mongoose.model('Team', TeamSchema);
