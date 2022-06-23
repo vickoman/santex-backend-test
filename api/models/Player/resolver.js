@@ -110,7 +110,7 @@ const getPlayersByLeague = async(_, {leagueCode}, ctx) => {
             $project: { _id: 0 }
             }
         ]).exec();
-        console.log(players.length);
+        await Team.populate(players, {path: "team"});
         return players;
     } catch(err) {
         throw new Error(err.message);
