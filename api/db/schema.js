@@ -83,6 +83,10 @@ const typeDefs = gql`
 
         # Teams
         getAllTeams: [Team]
+        getTeamByName(name: String): Team
+
+        #Players
+        getPlayersByLeague(leagueCode: String): [Player]
     }
     # Mutations
     type Mutation {

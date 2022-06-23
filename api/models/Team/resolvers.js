@@ -33,9 +33,7 @@ const getItemsToSave = async (teams) => {
     const teamsToSave = [];
     for await (let t of teams) {
         const exist = await Team.findOne({ name: { $eq: t.name } }).populate('leagues');
-        if(exist) { 
-            throw new Error(`Team with name: ${t.name} already exists`);
-        } else {
+        if(!exist) { 
             teamsToSave.push(t);
         }
     }
@@ -77,7 +75,21 @@ const getAllTeams = async (_, {}, ctx) => {
     return Teams;
 }
 
+const getTeamByName = async (_, { name }, ctx) => {
+    if(!ctx.user) throw new Error('You must be logged in');
+    try {
+        const team = await Team.findOne({ name}).populate('players');
+        if(!team){
+            throw new Error(`Does not exist team with name: ${name}`)
+        }
+        return team;
+    } catch(err) {
+        throw new Error(err.message);
+    }
+}
+
 module.exports = {
     importTeams,
-    getAllTeams
+    getAllTeams,
+    getTeamByName
 }

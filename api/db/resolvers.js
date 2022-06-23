@@ -11,7 +11,12 @@ const {
 } = require('../models/League/resolvers');
 
 const {
-    getAllTeams
+    getPlayersByLeague
+} = require('../models/Player/resolver');
+
+const {
+    getAllTeams,
+    getTeamByName
 } = require('../models/Team/resolvers');
 
 // Resolvers
@@ -20,7 +25,9 @@ const resolvers = {
         getUsers,
         getMe,
         getAllLeague,
-        getAllTeams
+        getAllTeams,
+        getTeamByName,
+        getPlayersByLeague
     },
     Mutation: {
         auth,

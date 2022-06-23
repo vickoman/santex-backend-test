@@ -6,16 +6,20 @@ const PlayerSchema =  mongoose.Schema({
         required: true,
         trim: true
     },
+    code: {
+        type: String,
+        required: false,
+        trim: true
+    },
     position: {
         type: String,
         required: false,
         trim: true
     },
     dateOfBirth: {
-        type: String,
+        type: Date,
         required: false,
         trim: true,
-        unique: true
     },
     countryOfBirth: {
         type: String,

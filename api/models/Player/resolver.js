@@ -18,7 +18,7 @@ const { transformTeamsImportedInArrayIds } = require('../../common/general');
                     name,
                     position: position || '',
                     code: id,
-                    dateOfBirth: dateOfBirth || '',
+                    dateOfBirth: new Date(dateOfBirth) || '',
                     nationality: nationality || '',
                     countryOfBirth: nationality || '',
                     team: teamId
@@ -64,6 +64,7 @@ const importPlayers =  async(job) => {
             console.log(`TEAM QUEUE: PLAYERS OF TEAM: ${name.toUpperCase()}  0 players imported!`);
             job.moveToCompleted('done', true)
         } else {
+            console.log(err.message);
             console.log(`JobId: ${job.id} Fails Team: ${name}`);
             job.moveToFailed({message: 'job failed'})
         }
@@ -77,7 +78,47 @@ const getAllPlayers = async (_, {}, ctx) => {
     return Players;
 }
 
+const getPlayersByLeague = async(_, {leagueCode}, ctx) => {
+    if(!ctx.user) throw new Error('You must be logged in');
+    try {
+        const players = await Player.aggregate([
+            {
+                '$lookup': {
+                    'from': 'teams',
+                    'localField': 'team',
+                    'foreignField': '_id',
+                    'as': 'teams'
+                },
+            },
+            {
+                '$lookup': {
+                    'from': 'leagues',
+                    'localField': 'teams.leagues',
+                    'foreignField': '_id',
+                    'as': 'league'
+                },
+            },
+            {
+                '$match': {
+                    'league.code': { '$eq': leagueCode }
+                }
+            },
+            { 
+                $addFields: { id: "$_id" }
+            },
+            {
+            $project: { _id: 0 }
+            }
+        ]).exec();
+        console.log(players.length);
+        return players;
+    } catch(err) {
+        throw new Error(err.message);
+    }
+}
+
 module.exports = {
     importPlayers,
     getAllPlayers,
+    getPlayersByLeague
 }
