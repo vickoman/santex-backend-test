@@ -79,7 +79,7 @@ sh: ##
 	@$(DOCKER_COMPOSE) -f "$(file)" exec $(c) bash
 
 remove-volume: ##
-	@$(DOCKER) makvolume rm infra_redis_data infra_mongo_data
+	@$(DOCKER) volume rm infra_redis_data infra_mongo_data
 
 api-deps: ##
 	cd ./api && npm i;
